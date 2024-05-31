@@ -12,9 +12,9 @@ import marshal
 
 
 def get_unbuffered_io(fd, filename):
-    f = open(str(filename), "w")
-    if fd != f.fileno():
-        os.dup2(f.fileno(), fd)
+    with open(str(filename), "w") as f:
+        if fd != f.fileno():
+            os.dup2(f.fileno(), fd)
     class AutoFlush:
         def write(self, data):
             f.write(data)

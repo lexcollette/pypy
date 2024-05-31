@@ -356,14 +356,13 @@ DOCTYPE html PUBLIC '-//W3C//DTD HTML 4.01//EN'
         # SF bug #1541697, this caused sgml parser to hang
         # Just verify this code doesn't cause a hang.
         CHUNK = 1024  # increasing this to 8212 makes the problem go away
-
-        f = open(test_support.findfile('sgml_input.html'))
-        fp = sgmllib.SGMLParser()
-        while 1:
-            data = f.read(CHUNK)
-            fp.feed(data)
-            if len(data) != CHUNK:
-                break
+        with open(test_support.findfile('sgml_input.html')) as f:
+            fp = sgmllib.SGMLParser()
+            while 1:
+                data = f.read(CHUNK)
+                fp.feed(data)
+                if len(data) != CHUNK:
+                    break
 
     def test_only_decode_ascii(self):
         # SF bug #1651995, make sure non-ascii character references are not decoded

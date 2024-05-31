@@ -29,8 +29,8 @@ main:
             self.file = udir.join(self.base_name % self.index)
 
     def encode(self):
-        f = open("%s/a.out" % (udir),'rb')
-        data = f.read()
+        with open("%s/a.out" % (udir),'rb') as f:
+            data = f.read()
         #f.close()
         i = data.find(self.begin_tag)
         assert i>=0
