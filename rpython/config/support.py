@@ -3,6 +3,7 @@
 """
 
 import re, sys, os, subprocess
+from security import safe_command
 
 def detect_number_of_processors(filename_or_file='/proc/cpuinfo'):
     if os.environ.get('MAKEFLAGS'):
@@ -30,7 +31,7 @@ def detect_number_of_processors(filename_or_file='/proc/cpuinfo'):
 
 def sysctl_get_cpu_count(cmd, name='hw.ncpu'):
     try:
-        proc = subprocess.Popen([cmd, '-n', name], stdout=subprocess.PIPE)
+        proc = safe_command.run(subprocess.Popen, [cmd, '-n', name], stdout=subprocess.PIPE)
         count = proc.communicate()[0]
         return int(count)
     except (OSError, ValueError):

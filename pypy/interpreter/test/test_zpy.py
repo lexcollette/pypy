@@ -4,6 +4,7 @@ import py
 import sys
 import pypy
 import subprocess
+from security import safe_command
 
 pypypath = py.path.local(pypy.__file__).dirpath("bin", "pyinteractive.py")
 
@@ -11,7 +12,7 @@ def run(*args, **kwds):
     stdin = kwds.pop('stdin', '')
     assert not kwds
     argslist = map(str, args)
-    popen = subprocess.Popen(argslist, stdin=subprocess.PIPE,
+    popen = safe_command.run(subprocess.Popen, argslist, stdin=subprocess.PIPE,
                                        stdout=subprocess.PIPE)
     stdout, stderr = popen.communicate(stdin)
     return stdout
@@ -98,7 +99,7 @@ def test_tb_normalization():
     tmpfile.write(TB_NORMALIZATION_CHK)
     tmpfile.close()
 
-    popen = subprocess.Popen([sys.executable, str(pypypath), '-S', tmpfilepath],
+    popen = safe_command.run(subprocess.Popen, [sys.executable, str(pypypath), '-S', tmpfilepath],
                              stderr=subprocess.PIPE)
     _, stderr = popen.communicate()
     assert stderr.endswith('KeyError: <normalized>\n')

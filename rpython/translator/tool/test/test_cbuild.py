@@ -3,6 +3,7 @@ import py
 from rpython.tool.udir import udir
 from rpython.translator.tool.cbuild import ExternalCompilationInfo
 from subprocess import Popen, PIPE, STDOUT
+from security import safe_command
 
 class TestEci:
     def setup_class(cls):
@@ -129,7 +130,7 @@ class TestEci:
     def test_from_pkg_config(self):
         try:
             cmd = ['pkg-config', 'ncurses', '--exists']
-            popen = Popen(cmd)
+            popen = safe_command.run(Popen, cmd)
             result = popen.wait()
         except OSError:
             result = -1

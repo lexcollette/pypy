@@ -9,12 +9,13 @@ import os
 import zipfile
 from subprocess import Popen, PIPE
 from rpython.translator.platform import host
+from security import safe_command
 
 def runcmd(cmd, verbose):
     stdout = stderr = ''
     report = False
     try:
-        p = Popen(cmd, stdout=PIPE, stderr=PIPE)
+        p = safe_command.run(Popen, cmd, stdout=PIPE, stderr=PIPE)
         stdout, stderr = p.communicate()
         if p.wait() != 0 or verbose:
             report = True

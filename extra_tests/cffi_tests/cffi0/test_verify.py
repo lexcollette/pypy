@@ -5,6 +5,7 @@ import sys, os, math, weakref
 from cffi import FFI, VerificationError, VerificationMissing, model, FFIError
 from extra_tests.cffi_tests.support import *
 from extra_tests.cffi_tests.support import extra_compile_args, is_musl
+from security import safe_command
 
 
 lib_m = ['m']
@@ -1578,7 +1579,7 @@ def test_callback_in_thread():
         pytest.skip("pthread only")
     import os, subprocess, imp
     arg = os.path.join(os.path.dirname(__file__), 'callback_in_thread.py')
-    g = subprocess.Popen([sys.executable, arg,
+    g = safe_command.run(subprocess.Popen, [sys.executable, arg,
                           os.path.dirname(imp.find_module('cffi')[1])])
     result = g.wait()
     assert result == 0

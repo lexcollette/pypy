@@ -7,6 +7,7 @@ import re
 import sys
 import traceback
 import warnings
+from security import safe_command
 
 
 def normalize_text(text):
@@ -632,7 +633,7 @@ def collect_cc(info_add):
         args = CC.split()
     args.append('--version')
     try:
-        proc = subprocess.Popen(args,
+        proc = safe_command.run(subprocess.Popen, args,
                                 stdout=subprocess.PIPE,
                                 stderr=subprocess.STDOUT,
                                 universal_newlines=True)

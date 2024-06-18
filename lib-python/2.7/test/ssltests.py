@@ -4,6 +4,7 @@
 import ssl
 import sys
 import subprocess
+from security import safe_command
 
 TESTS = [
     'test_ensurepip.py', 'test_ftplib', 'test_hashlib',
@@ -29,7 +30,7 @@ def run_regrtests(*extra_args):
     else:
         args.extend(extra_args)
     args.extend(TESTS)
-    result = subprocess.call(args)
+    result = safe_command.run(subprocess.call, args)
     sys.exit(result)
 
 if __name__ == '__main__':

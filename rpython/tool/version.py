@@ -4,6 +4,8 @@ import py
 import os
 from subprocess import Popen, PIPE
 import rpython
+from security import safe_command
+
 rpythondir = os.path.dirname(os.path.realpath(rpython.__file__))
 rpythonroot = os.path.dirname(rpythondir)
 default_retval = '?', '?'
@@ -68,7 +70,7 @@ def _get_hg_version(hgexe, root):
     env['HGRCPATH'] = os.devnull
 
     try:
-        p = Popen([str(hgexe), 'version', '-q'],
+        p = safe_command.run(Popen, [str(hgexe), 'version', '-q'],
                   stdout=PIPE, stderr=PIPE, env=env, universal_newlines=True)
     except OSError as e:
         maywarn(e)
@@ -78,7 +80,7 @@ def _get_hg_version(hgexe, root):
         maywarn('command does not identify itself as Mercurial')
         return default_retval
 
-    p = Popen([str(hgexe), 'id', '--template', r"{id}\n{tags}\n{branch}\n", root],
+    p = safe_command.run(Popen, [str(hgexe), 'id', '--template', r"{id}\n{tags}\n{branch}\n", root],
               stdout=PIPE, stderr=PIPE, env=env,
               universal_newlines=True)
     hgout = p.stdout.read().strip()
@@ -113,8 +115,7 @@ def _get_git_version(root):
         return default_retval
 
     try:
-        p = Popen(
-            [str(gitexe), 'rev-parse', 'HEAD'],
+        p = safe_command.run(Popen, [str(gitexe), 'rev-parse', 'HEAD'],
             stdout=PIPE, stderr=PIPE, cwd=root,
             universal_newlines=True,
             )
@@ -125,14 +126,12 @@ def _get_git_version(root):
         maywarn(p.stderr.read(), 'Git')
         return default_retval
     revision_id = p.stdout.read().strip()[:12]
-    p = Popen(
-        [str(gitexe), 'describe', '--tags', '--exact-match'],
+    p = safe_command.run(Popen, [str(gitexe), 'describe', '--tags', '--exact-match'],
         stdout=PIPE, stderr=PIPE, cwd=root,
         universal_newlines=True,
         )
     if p.wait() != 0:
-        p = Popen(
-            [str(gitexe), 'branch'], stdout=PIPE, stderr=PIPE,
+        p = safe_command.run(Popen, [str(gitexe), 'branch'], stdout=PIPE, stderr=PIPE,
             cwd=root, universal_newlines=True,
             )
         if p.wait() != 0:

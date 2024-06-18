@@ -19,6 +19,7 @@ import unittest
 from test import support
 # Use utils alias to use the same code for TestUtils in master and 2.7 branches
 import regrtest as utils
+from security import safe_command
 
 
 Py_DEBUG = hasattr(sys, 'getobjects')
@@ -207,7 +208,7 @@ class BaseTestCase(unittest.TestCase):
             input = ''
         if 'stderr' not in kw:
             kw['stderr'] = subprocess.PIPE
-        proc = subprocess.Popen(args,
+        proc = safe_command.run(subprocess.Popen, args,
                                 universal_newlines=True,
                                 stdout=subprocess.PIPE,
                                 **kw)
