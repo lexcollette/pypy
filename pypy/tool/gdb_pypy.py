@@ -134,7 +134,8 @@ class RPyType(Command):
         vname = 'pypy_g_rpython_memory_gctypelayout_GCData.gcd_inst_typeids_z'
         length = int(self.gdb.parse_and_eval('*(long*)%s' % vname))
         vstart = '(char*)(((long*)%s)+1)' % vname
-        fname = tempfile.mktemp()
+        with tempfile.NamedTemporaryFile(delete=False) as tf:
+            fname = tf.name
         try:
             self.gdb.execute('dump binary memory %s %s %s+%d' %
                              (fname, vstart, vstart, length))

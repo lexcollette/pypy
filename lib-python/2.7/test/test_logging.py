@@ -1036,7 +1036,8 @@ class EncodingTest(BaseTest):
     def test_encoding_plain_file(self):
         # In Python 2.x, a plain file object is treated as having no encoding.
         log = logging.getLogger("test")
-        fn = tempfile.mktemp(".log")
+        with tempfile.NamedTemporaryFile(suffix=".log", delete=False) as tf:
+            fn = tf.name
         # the non-ascii data we write to the log.
         data = "foo\x80"
         try:

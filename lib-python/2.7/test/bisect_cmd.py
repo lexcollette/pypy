@@ -72,7 +72,8 @@ def list_cases(args):
 
 
 def run_tests(args, tests, huntrleaks=None):
-    tmp = tempfile.mktemp()
+    with tempfile.NamedTemporaryFile(delete=False) as tf:
+        tmp = tf.name
     try:
         write_tests(tmp, tests)
 
