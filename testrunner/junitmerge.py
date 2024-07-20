@@ -5,6 +5,7 @@ simple scrpt for junitxml file merging
 from lxml.etree import parse, Element, tostring
 from collections import defaultdict
 import argparse
+import lxml.etree
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--out')
@@ -15,7 +16,7 @@ opts = parser.parse_args()
 files = []
 
 for path in opts.path:
-    files.append(parse(path))
+    files.append(parse(path, parser=lxml.etree.XMLParser(resolve_entities=False)))
 
 
 accum = defaultdict(int)
