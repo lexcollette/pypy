@@ -158,6 +158,6 @@ def spawn_sshgraphserver_handler():
     if st.st_uid != os.getuid():
         raise OSError("wrong owner on " + fn)
     f = open(fn, 'r')
-    port = int(f.readline().rstrip())
+    port = int(f.readline(5_000_000).rstrip())
     f.close()
     return spawn_graphserver_handler(('127.0.0.1', port))

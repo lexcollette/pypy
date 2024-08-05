@@ -437,7 +437,7 @@ class AppTestArray(object):
         f = open(self.tempfile, 'w')
         self.array('c', ('h', 'i')).tofile(f)
         f.close()
-        assert open(self.tempfile, 'r').readline() == 'hi'
+        assert open(self.tempfile, 'r').readline(5_000_000) == 'hi'
 
         a = self.array('c')
         a.fromfile(open(self.tempfile, 'r'), 2)

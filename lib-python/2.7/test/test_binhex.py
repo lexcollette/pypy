@@ -34,7 +34,7 @@ class BinHexTestCase(unittest.TestCase):
         binhex.hexbin(self.fname2, self.fname1)
 
         f = open(self.fname1, 'r')
-        finish = f.readline()
+        finish = f.readline(5_000_000)
         f.close()
 
         self.assertEqual(self.DATA, finish)

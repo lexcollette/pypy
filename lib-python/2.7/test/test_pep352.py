@@ -46,7 +46,7 @@ class ExceptionClassTests(unittest.TestCase):
         inheritance_tree = open(os.path.join(os.path.split(__file__)[0],
                                                 'exception_hierarchy.txt'))
         try:
-            superclass_name = inheritance_tree.readline().rstrip()
+            superclass_name = inheritance_tree.readline(5_000_000).rstrip()
             try:
                 last_exc = getattr(__builtin__, superclass_name)
             except AttributeError:
