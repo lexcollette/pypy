@@ -67,20 +67,20 @@ class ScriptBinding:
             return 'break'
 
     def tabnanny(self, filename):
-        f = open(filename, 'r')
-        try:
-            tabnanny.process_tokens(tokenize.generate_tokens(f.readline))
-        except tokenize.TokenError as msg:
-            msgtxt, (lineno, start) = msg.args
-            self.editwin.gotoline(lineno)
-            self.errorbox("Tabnanny Tokenizing Error",
-                          "Token Error: %s" % msgtxt)
-            return False
-        except tabnanny.NannyNag as nag:
-            # The error messages from tabnanny are too confusing...
-            self.editwin.gotoline(nag.get_lineno())
-            self.errorbox("Tab/space error", indent_message)
-            return False
+        with open(filename, 'r') as f:
+            try:
+                tabnanny.process_tokens(tokenize.generate_tokens(f.readline))
+            except tokenize.TokenError as msg:
+                msgtxt, (lineno, start) = msg.args
+                self.editwin.gotoline(lineno)
+                self.errorbox("Tabnanny Tokenizing Error",
+                              "Token Error: %s" % msgtxt)
+                return False
+            except tabnanny.NannyNag as nag:
+                # The error messages from tabnanny are too confusing...
+                self.editwin.gotoline(nag.get_lineno())
+                self.errorbox("Tab/space error", indent_message)
+                return False
         return True
 
     def checksyntax(self, filename):

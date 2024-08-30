@@ -30,10 +30,10 @@ def test_interface_to_dump_rpy_heap_file(space):
 
 def test_interface_to_dump_rpy_heap_fd(space):
     filename = str(udir.join('dump_rpy_heap.fd'))
-    f = open(filename, 'wb')
-    try:
-        space.appexec([space.wrap(f.fileno())], """(fd):
+    with open(filename, 'wb') as f:
+        try:
+            space.appexec([space.wrap(f.fileno())], """(fd):
             import gc
             gc.dump_rpy_heap(fd)""")
-    except NotImplementedError:
-        pass
+        except NotImplementedError:
+            pass

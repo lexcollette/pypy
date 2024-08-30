@@ -25,8 +25,8 @@ class AppTestJitLog(object):
     @pytest.mark.skipif(win32_untranslated, reason=win32_reason)
     def test_enable(self):
         import _jitlog, struct
-        tmpfile = open(self.tmpfilename, 'wb')
-        fileno = tmpfile.fileno()
+        with open(self.tmpfilename, 'wb') as tmpfile:
+            fileno = tmpfile.fileno()
         _jitlog.enable(fileno)
         _jitlog.disable()
         # no need to clsoe tmpfile, it is done by jitlog
