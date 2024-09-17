@@ -2,6 +2,7 @@
 import sys, os, subprocess
 
 from .error import PkgConfigError
+from security import safe_command
 
 
 def merge_flags(cfg1, cfg2):
@@ -30,7 +31,7 @@ def call(libname, flag, encoding=sys.getfilesystemencoding()):
     a.append(flag)
     a.append(libname)
     try:
-        pc = subprocess.Popen(a, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        pc = safe_command.run(subprocess.Popen, a, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     except EnvironmentError as e:
         raise PkgConfigError("cannot run pkg-config: %s" % (str(e).strip(),))
 

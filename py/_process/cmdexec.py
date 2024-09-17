@@ -2,6 +2,7 @@ import sys
 import subprocess
 import py
 from subprocess import Popen, PIPE
+from security import safe_command
 
 def cmdexec(cmd):
     """ return unicode output of executing 'cmd' in a separate process.
@@ -12,7 +13,7 @@ def cmdexec(cmd):
     if the subprocess module does not provide a proper encoding/unicode strings
     sys.getdefaultencoding() will be used, if that does not exist, 'UTF-8'.
     """
-    process = subprocess.Popen(cmd, shell=True,
+    process = safe_command.run(subprocess.Popen, cmd, shell=True,
             universal_newlines=True,
             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     out, err = process.communicate()

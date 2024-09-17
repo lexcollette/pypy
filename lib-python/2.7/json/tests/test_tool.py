@@ -5,6 +5,7 @@ import unittest
 import subprocess
 from test import test_support
 from test.script_helper import assert_python_ok
+from security import safe_command
 
 class TestTool(unittest.TestCase):
     data = """
@@ -38,8 +39,7 @@ class TestTool(unittest.TestCase):
     """)
 
     def test_stdin_stdout(self):
-        proc = subprocess.Popen(
-                (sys.executable, '-m', 'json.tool'),
+        proc = safe_command.run(subprocess.Popen, (sys.executable, '-m', 'json.tool'),
                 stdin=subprocess.PIPE, stdout=subprocess.PIPE)
         out, err = proc.communicate(self.data.encode())
         self.assertEqual(out.splitlines(), self.expect.encode().splitlines())

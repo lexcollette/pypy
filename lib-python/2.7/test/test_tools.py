@@ -16,6 +16,7 @@ import tempfile
 import textwrap
 from test import test_support
 from test.script_helper import assert_python_ok, temp_dir
+from security import safe_command
 
 if not sysconfig.is_python_build():
     # XXX some installers do contain the tools, should we detect that
@@ -47,8 +48,7 @@ class PindentTests(unittest.TestCase):
             self.assertEqual(f1.readlines(), f2.readlines())
 
     def pindent(self, source, *args):
-        proc = subprocess.Popen(
-                (sys.executable, self.script) + args,
+        proc = safe_command.run(subprocess.Popen, (sys.executable, self.script) + args,
                 stdin=subprocess.PIPE, stdout=subprocess.PIPE,
                 universal_newlines=True)
         out, err = proc.communicate(source)

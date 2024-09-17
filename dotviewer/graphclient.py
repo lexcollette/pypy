@@ -4,6 +4,7 @@ import os, sys, re
 import subprocess
 from dotviewer import msgstruct
 from dotviewer.strunicode import forcestr
+from security import safe_command
 
 this_dir = os.path.dirname(os.path.abspath(__file__))
 GRAPHSERVER = os.path.join(this_dir, 'graphserver.py')
@@ -137,7 +138,7 @@ def spawn_local_handler():
         args = [python, '-m', "dotviewer.graphserver", '--stdio']
     else:
         args = [python, GRAPHSERVER, '--stdio']
-    p = subprocess.Popen(args,
+    p = safe_command.run(subprocess.Popen, args,
                          stdout=subprocess.PIPE, stdin=subprocess.PIPE)
     child_in, child_out = p.stdin, p.stdout
     io = msgstruct.FileIO(child_out, child_in)

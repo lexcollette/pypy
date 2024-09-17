@@ -10,6 +10,8 @@ import subprocess
 import py_compile
 import contextlib
 import shutil
+from security import safe_command
+
 try:
     import zipfile
 except ImportError:
@@ -30,7 +32,7 @@ def _assert_python(expected_success, *args, **env_vars):
     # shared library builds.
     env = os.environ.copy()
     env.update(env_vars)
-    p = subprocess.Popen(cmd_line, stdin=subprocess.PIPE,
+    p = safe_command.run(subprocess.Popen, cmd_line, stdin=subprocess.PIPE,
                          stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                          env=env)
     try:
@@ -65,13 +67,13 @@ def python_exit_code(*args):
     cmd_line = [sys.executable, '-E']
     cmd_line.extend(args)
     with open(os.devnull, 'w') as devnull:
-        return subprocess.call(cmd_line, stdout=devnull,
+        return safe_command.run(subprocess.call, cmd_line, stdout=devnull,
                                 stderr=subprocess.STDOUT)
 
 def spawn_python(*args, **kwargs):
     cmd_line = [sys.executable, '-E']
     cmd_line.extend(args)
-    return subprocess.Popen(cmd_line, stdin=subprocess.PIPE,
+    return safe_command.run(subprocess.Popen, cmd_line, stdin=subprocess.PIPE,
                             stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                             **kwargs)
 

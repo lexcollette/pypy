@@ -11,6 +11,7 @@ import unittest
 import hashlib
 import subprocess
 import test.test_support
+from security import safe_command
 
 encoding = 'utf-8'
 
@@ -244,7 +245,7 @@ class UnicodeMiscTest(UnicodeDatabaseTest):
         args = [sys.executable, "-c", code]
         # We use a subprocess because the unicodedata module may already have
         # been loaded in this process.
-        popen = subprocess.Popen(args, stderr=subprocess.PIPE)
+        popen = safe_command.run(subprocess.Popen, args, stderr=subprocess.PIPE)
         popen.wait()
         self.assertIn(popen.returncode, [0, 1]) # at least it did not segfault
         if test.test_support.check_impl_detail():
