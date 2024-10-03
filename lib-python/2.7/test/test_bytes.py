@@ -553,7 +553,8 @@ class ByteArrayTest(BaseBytesTest):
     def test_bytearray_api(self):
         short_sample = b"Hello world\n"
         sample = short_sample + b"\0"*(20 - len(short_sample))
-        tfn = tempfile.mktemp()
+        with tempfile.NamedTemporaryFile(delete=False) as tf:
+            tfn = tf.name
         try:
             # Prepare
             with open(tfn, "wb") as f:
