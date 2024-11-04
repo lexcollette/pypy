@@ -130,10 +130,10 @@ class AppTestMMap:
         m = mmap(f.fileno(), 4)
         if os.name == "nt":
             # windows replaces \n with \r. it's time to change to \n only MS!
-            assert m.readline() == "foo\r"
+            assert m.readline(5_000_000) == "foo\r"
         elif os.name == "posix":
-            assert m.readline() == "foo\n"
-        assert m.readline() == ""
+            assert m.readline(5_000_000) == "foo\n"
+        assert m.readline(5_000_000) == ""
         m.close()
         f.close()
 
