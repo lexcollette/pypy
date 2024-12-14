@@ -894,8 +894,8 @@ if __name__ == '__main__':
 
     # Run a preprocessor
     import sys
-    f = open(sys.argv[1])
-    input = f.read()
+    with open(sys.argv[1]) as f:
+        input = f.read()
 
     p = Preprocessor(lexer)
     p.parse(input,sys.argv[1])

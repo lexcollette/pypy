@@ -99,11 +99,11 @@ class AppTestMMap:
 
     def test_close(self):
         from mmap import mmap
-        f = open(self.tmpname + "c", "w+")
+        with open(self.tmpname + "c", "w+") as f:
 
-        f.write("c")
-        f.flush()
-        m = mmap(f.fileno(), 1)
+            f.write("c")
+            f.flush()
+            m = mmap(f.fileno(), 1)
         m.close()
         raises(ValueError, m.read, 1)
         raises(ValueError, len, m)
@@ -262,13 +262,13 @@ class AppTestMMap:
 
     def test_write(self):
         import mmap
-        f = open(self.tmpname + "j", "w+")
+        with open(self.tmpname + "j", "w+") as f:
 
-        f.write("foobar")
-        f.flush()
-        m = mmap.mmap(f.fileno(), 6, access=mmap.ACCESS_READ)
-        raises(TypeError, m.write, "foo")
-        m = mmap.mmap(f.fileno(), 6, access=mmap.ACCESS_WRITE)
+            f.write("foobar")
+            f.flush()
+            m = mmap.mmap(f.fileno(), 6, access=mmap.ACCESS_READ)
+            raises(TypeError, m.write, "foo")
+            m = mmap.mmap(f.fileno(), 6, access=mmap.ACCESS_WRITE)
         raises(TypeError, m.write, 123)
         raises(ValueError, m.write, "c"*10)
         m.write("ciao\n")
@@ -278,13 +278,13 @@ class AppTestMMap:
 
     def test_write_byte(self):
         import mmap
-        f = open(self.tmpname + "k", "w+")
+        with open(self.tmpname + "k", "w+") as f:
 
-        f.write("foobar")
-        f.flush()
-        m = mmap.mmap(f.fileno(), 6, access=mmap.ACCESS_READ)
-        raises(TypeError, m.write_byte, "f")
-        m = mmap.mmap(f.fileno(), 6, access=mmap.ACCESS_WRITE)
+            f.write("foobar")
+            f.flush()
+            m = mmap.mmap(f.fileno(), 6, access=mmap.ACCESS_READ)
+            raises(TypeError, m.write_byte, "f")
+            m = mmap.mmap(f.fileno(), 6, access=mmap.ACCESS_WRITE)
         raises(TypeError, m.write_byte, 123)
         raises(TypeError, m.write_byte, "ab")
         m.write_byte("x")
@@ -388,19 +388,18 @@ class AppTestMMap:
 
         import mmap
         import os
-
-        f = open(self.tmpname + "p", "w+")
-        f.write("foobar")
-        f.flush()
-        m = mmap.mmap(f.fileno(), 6, access=mmap.ACCESS_READ)
-        raises(TypeError, m.resize, 1)
-        m = mmap.mmap(f.fileno(), 6, access=mmap.ACCESS_COPY)
-        raises(TypeError, m.resize, 1)
-        m = mmap.mmap(f.fileno(), 6, access=mmap.ACCESS_WRITE)
-        f_size = os.fstat(f.fileno()).st_size
-        assert m.size() == f_size == 6
-        raises(SystemError, m.resize, 10)
-        f_size = os.fstat(f.fileno()).st_size
+        with open(self.tmpname + "p", "w+") as f:
+            f.write("foobar")
+            f.flush()
+            m = mmap.mmap(f.fileno(), 6, access=mmap.ACCESS_READ)
+            raises(TypeError, m.resize, 1)
+            m = mmap.mmap(f.fileno(), 6, access=mmap.ACCESS_COPY)
+            raises(TypeError, m.resize, 1)
+            m = mmap.mmap(f.fileno(), 6, access=mmap.ACCESS_WRITE)
+            f_size = os.fstat(f.fileno()).st_size
+            assert m.size() == f_size == 6
+            raises(SystemError, m.resize, 10)
+            f_size = os.fstat(f.fileno()).st_size
         assert m.size() == f_size == 6
 
     def test_len(self):
@@ -555,10 +554,10 @@ class AppTestMMap:
 
     def test_sequence_type(self):
         from mmap import mmap
-        f = open(self.tmpname + "x", "w+")
-        f.write("foobar")
-        f.flush()
-        m = mmap(f.fileno(), 6)
+        with open(self.tmpname + "x", "w+") as f:
+            f.write("foobar")
+            f.flush()
+            m = mmap(f.fileno(), 6)
         import operator
         assert operator.isSequenceType(m)
         assert not operator.isMappingType(m)
