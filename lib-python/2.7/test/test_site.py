@@ -17,6 +17,7 @@ import encodings
 import subprocess
 import sysconfig
 from copy import copy
+from security import safe_command
 
 # Need to make sure to not import 'site' if someone specified ``-S`` at the
 # command-line.  Detect this by just making sure 'site' has not been imported
@@ -191,28 +192,28 @@ class HelperFunctionsTests(unittest.TestCase):
         self.assertIn(usersite, sys.path)
 
         env = os.environ.copy()
-        rc = subprocess.call([sys.executable, '-c',
+        rc = safe_command.run(subprocess.call, [sys.executable, '-c',
             'import sys; sys.exit(%r in sys.path)' % usersite],
             env=env)
         self.assertEqual(rc, 1, "%r is not in sys.path (sys.exit returned %r)"
                 % (usersite, rc))
 
         env = os.environ.copy()
-        rc = subprocess.call([sys.executable, '-s', '-c',
+        rc = safe_command.run(subprocess.call, [sys.executable, '-s', '-c',
             'import sys; sys.exit(%r in sys.path)' % usersite],
             env=env)
         self.assertEqual(rc, 0)
 
         env = os.environ.copy()
         env["PYTHONNOUSERSITE"] = "1"
-        rc = subprocess.call([sys.executable, '-c',
+        rc = safe_command.run(subprocess.call, [sys.executable, '-c',
             'import sys; sys.exit(%r in sys.path)' % usersite],
             env=env)
         self.assertEqual(rc, 0)
 
         env = os.environ.copy()
         env["PYTHONUSERBASE"] = "/tmp"
-        rc = subprocess.call([sys.executable, '-c',
+        rc = safe_command.run(subprocess.call, [sys.executable, '-c',
             'import sys, site; sys.exit(site.USER_BASE.startswith("/tmp"))'],
             env=env)
         self.assertEqual(rc, 1)

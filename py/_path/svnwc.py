@@ -9,6 +9,7 @@ import os, sys, time, re, calendar
 import py
 import subprocess
 from py._path import common
+from security import safe_command
 
 #-----------------------------------------------------------
 # Caching latest repository revision and repo-paths
@@ -862,7 +863,7 @@ if verbose is True, then the LogEntry instances also know which files changed.
         cmd = locale_env + 'svn log --xml %s %s %s "%s"' % (
             rev_opt, verbose_opt, auth_opt, self.strpath)
 
-        popen = subprocess.Popen(cmd,
+        popen = safe_command.run(subprocess.Popen, cmd,
                     stdout=subprocess.PIPE,
                     stderr=subprocess.PIPE,
                     shell=True,
