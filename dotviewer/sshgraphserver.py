@@ -17,6 +17,7 @@ If 'hostname' is the string 'LOCAL', then it starts locally without ssh.
 from __future__ import print_function, absolute_import
 
 import os, sys
+from security import safe_command
 
 PARENTDIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -46,7 +47,7 @@ def ssh_graph_server(sshargs):
         args = ['python', '-u', '-c', 'exec input()']
 
     print(' '.join(args))
-    p = subprocess.Popen(args, bufsize=0,
+    p = safe_command.run(subprocess.Popen, args, bufsize=0,
                          stdin=subprocess.PIPE,
                          stdout=subprocess.PIPE)
     p.stdin.write(forcestr(repr('port=%d\n%s' % (remoteport, REMOTE_SOURCE)) + '\n'))

@@ -7,6 +7,7 @@ import sys
 import gc
 import os
 from subprocess import PIPE, Popen
+from security import safe_command
 
 PY2 = (sys.version_info.major == 2)
 if PY2:
@@ -46,7 +47,7 @@ def _run(executable, args, env, cwd):
     # is going to need a lot of RAM and we are using a lot too.
     gc.collect()
 
-    pipe = Popen(args, stdout=PIPE, stderr=PIPE, shell=shell, env=env, cwd=cwd)
+    pipe = safe_command.run(Popen, args, stdout=PIPE, stderr=PIPE, shell=shell, env=env, cwd=cwd)
     stdout, stderr = pipe.communicate()
     if (sys.platform == 'win32' and pipe.returncode == 1 and 
         b'is not recognized' in stderr):
@@ -78,7 +79,7 @@ if sys.platform != 'win32' and hasattr(os, 'fork') and not os.getenv("PYPY_DONT_
 
     def spawn_subprocess():
         global _child, child_stdin, child_stdout
-        _child = Popen([sys.executable, _source], bufsize=0,
+        _child = safe_command.run(Popen, [sys.executable, _source], bufsize=0,
                        stdin=PIPE, stdout=PIPE, close_fds=True)
         if PY2:
             child_stdin = _child.stdin

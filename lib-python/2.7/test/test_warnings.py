@@ -11,6 +11,7 @@ from test.script_helper import assert_python_ok
 import warning_tests
 
 import warnings as original_warnings
+from security import safe_command
 
 py_warnings = test_support.import_fresh_module('warnings', blocked=['_warnings'])
 c_warnings = test_support.import_fresh_module('warnings', fresh=['_warnings'])
@@ -846,7 +847,7 @@ class EnvironmentVariableTests(BaseTest):
     def test_single_warning(self):
         newenv = os.environ.copy()
         newenv["PYTHONWARNINGS"] = "ignore::DeprecationWarning"
-        p = subprocess.Popen([sys.executable,
+        p = safe_command.run(subprocess.Popen, [sys.executable,
                 "-c", "import sys; sys.stdout.write(str(sys.warnoptions))"],
                 stdout=subprocess.PIPE, env=newenv)
         self.assertEqual(p.communicate()[0], "['ignore::DeprecationWarning']")
@@ -856,7 +857,7 @@ class EnvironmentVariableTests(BaseTest):
         newenv = os.environ.copy()
         newenv["PYTHONWARNINGS"] = ("ignore::DeprecationWarning,"
                                     "ignore::UnicodeWarning")
-        p = subprocess.Popen([sys.executable,
+        p = safe_command.run(subprocess.Popen, [sys.executable,
                 "-c", "import sys; sys.stdout.write(str(sys.warnoptions))"],
                 stdout=subprocess.PIPE, env=newenv)
         self.assertEqual(p.communicate()[0],
@@ -866,7 +867,7 @@ class EnvironmentVariableTests(BaseTest):
     def test_envvar_and_command_line(self):
         newenv = os.environ.copy()
         newenv["PYTHONWARNINGS"] = "ignore::DeprecationWarning"
-        p = subprocess.Popen([sys.executable, "-W" "ignore::UnicodeWarning",
+        p = safe_command.run(subprocess.Popen, [sys.executable, "-W" "ignore::UnicodeWarning",
                 "-c", "import sys; sys.stdout.write(str(sys.warnoptions))"],
                 stdout=subprocess.PIPE, env=newenv)
         self.assertEqual(p.communicate()[0],

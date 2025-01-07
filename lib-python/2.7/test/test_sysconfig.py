@@ -16,6 +16,7 @@ from sysconfig import (get_paths, get_platform, get_config_vars,
                        _get_default_scheme, _expand_vars,
                        get_scheme_names, get_config_var)
 import _osx_support
+from security import safe_command
 
 class TestSysConfig(unittest.TestCase):
 
@@ -272,7 +273,7 @@ class TestSysConfig(unittest.TestCase):
         def get(python):
             cmd = [python, '-c',
                    'import sysconfig; print sysconfig.get_platform()']
-            p = subprocess.Popen(cmd, stdout=subprocess.PIPE)
+            p = safe_command.run(subprocess.Popen, cmd, stdout=subprocess.PIPE)
             return p.communicate()
         real = os.path.realpath(sys.executable)
         link = os.path.abspath(TESTFN)
@@ -310,7 +311,7 @@ class TestSysConfig(unittest.TestCase):
             del env['MACOSX_DEPLOYMENT_TARGET']
 
         with open('/dev/null', 'w') as devnull_fp:
-            p = subprocess.Popen([
+            p = safe_command.run(subprocess.Popen, [
                     sys.executable, '-c',
                    'import sysconfig; print(sysconfig.get_platform())',
                 ],
@@ -330,7 +331,7 @@ class TestSysConfig(unittest.TestCase):
         env = os.environ.copy()
         env['MACOSX_DEPLOYMENT_TARGET'] = '10.1'
 
-        p = subprocess.Popen([
+        p = safe_command.run(subprocess.Popen, [
                 sys.executable, '-c',
                 'import sysconfig; print(sysconfig.get_platform())',
             ],

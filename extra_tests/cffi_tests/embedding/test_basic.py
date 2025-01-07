@@ -4,6 +4,7 @@ import shutil, subprocess, time
 import pytest
 from extra_tests.cffi_tests.udir import udir
 import cffi
+from security import safe_command
 
 
 local_dir = os.path.dirname(os.path.abspath(__file__))
@@ -55,7 +56,7 @@ class EmbeddingTests:
 
     def _run_base(self, args, **kwds):
         print('RUNNING:', args, kwds)
-        return subprocess.Popen(args, **kwds)
+        return safe_command.run(subprocess.Popen, args, **kwds)
 
     def _run(self, args):
         popen = self._run_base(args, cwd=self.get_path(),

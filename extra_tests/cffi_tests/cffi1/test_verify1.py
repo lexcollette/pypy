@@ -7,6 +7,7 @@ from cffi import recompiler
 from extra_tests.cffi_tests.support import *
 from extra_tests.cffi_tests.support import _verify, extra_compile_args, is_musl
 import _cffi_backend
+from security import safe_command
 
 lib_m = ['m']
 if sys.platform == 'win32':
@@ -1538,7 +1539,7 @@ def test_callback_in_thread():
         pytest.skip("pthread only")
     import os, subprocess, imp
     arg = os.path.join(os.path.dirname(__file__), 'callback_in_thread.py')
-    g = subprocess.Popen([sys.executable, arg,
+    g = safe_command.run(subprocess.Popen, [sys.executable, arg,
                           os.path.dirname(imp.find_module('cffi')[1])])
     result = g.wait()
     assert result == 0

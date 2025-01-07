@@ -27,6 +27,7 @@ import subprocess
 import sys
 import tempfile
 import time
+from security import safe_command
 
 
 def write_tests(filename, tests):
@@ -51,7 +52,7 @@ def format_shell_args(args):
 def list_cases(args):
     cmd = [sys.executable, '-m', 'test', '--list-cases']
     cmd.extend(args.test_args)
-    proc = subprocess.Popen(cmd,
+    proc = safe_command.run(subprocess.Popen, cmd,
                             stdout=subprocess.PIPE,
                             universal_newlines=True)
     try:
@@ -79,7 +80,7 @@ def run_tests(args, tests, huntrleaks=None):
         cmd = [sys.executable, '-m', 'test', '--matchfile', tmp]
         cmd.extend(args.test_args)
         print("+ %s" % format_shell_args(cmd))
-        proc = subprocess.Popen(cmd)
+        proc = safe_command.run(subprocess.Popen, cmd)
         try:
             exitcode = proc.wait()
         except:

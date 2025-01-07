@@ -7,6 +7,8 @@ from rpython.translator.platform import log, _run_subprocess
 from rpython.translator.platform import Platform, posix
 
 import rpython
+from security import safe_command
+
 rpydir = str(py.path.local(rpython.__file__).join('..'))
 
 def _get_compiler_type(cc, x64_flag):
@@ -79,7 +81,7 @@ def _get_msvc_env(vsver, x64flag):
 
         import subprocess
         try:
-            popen = subprocess.Popen('"%s" & set' % (vcvars,),
+            popen = safe_command.run(subprocess.Popen, '"%s" & set' % (vcvars,),
                                  stdout=subprocess.PIPE,
                                  stderr=subprocess.PIPE)
 

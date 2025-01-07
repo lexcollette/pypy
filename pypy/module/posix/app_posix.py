@@ -4,6 +4,8 @@ from _structseq import structseqtype, structseqfield
 
 # XXX we need a way to access the current module's globals more directly...
 import sys
+from security import safe_command
+
 if 'posix' in sys.builtin_module_names:
     import posix
     osname = 'posix'
@@ -246,14 +248,14 @@ else:
         import subprocess
 
         if mode.startswith('r'):
-            proc = subprocess.Popen(cmd,
+            proc = safe_command.run(subprocess.Popen, cmd,
                                     shell=True,
                                     stdout=subprocess.PIPE,
                                     bufsize=bufsize,
                                     universal_newlines=univ_nl)
             return _wrap_close(proc.stdout, proc)
         else:
-            proc = subprocess.Popen(cmd,
+            proc = safe_command.run(subprocess.Popen, cmd,
                                     shell=True,
                                     stdin=subprocess.PIPE,
                                     bufsize=bufsize,
@@ -269,7 +271,7 @@ else:
             raise ValueError("invalid mode %r" % (mode,))
 
         import subprocess
-        p = subprocess.Popen(cmd, shell=True, bufsize=bufsize,
+        p = safe_command.run(subprocess.Popen, cmd, shell=True, bufsize=bufsize,
                              stdin=subprocess.PIPE,
                              stdout=subprocess.PIPE,
                              universal_newlines=(mode =='t'))
@@ -284,7 +286,7 @@ else:
             raise ValueError("invalid mode %r" % (mode,))
 
         import subprocess
-        p = subprocess.Popen(cmd, shell=True, bufsize=bufsize,
+        p = safe_command.run(subprocess.Popen, cmd, shell=True, bufsize=bufsize,
                              stdin=subprocess.PIPE,
                              stdout=subprocess.PIPE,
                              stderr=subprocess.PIPE,
@@ -301,7 +303,7 @@ else:
             raise ValueError("invalid mode %r" % (mode,))
 
         import subprocess
-        p = subprocess.Popen(cmd, shell=True, bufsize=bufsize,
+        p = safe_command.run(subprocess.Popen, cmd, shell=True, bufsize=bufsize,
                              stdin=subprocess.PIPE,
                              stdout=subprocess.PIPE,
                              stderr=subprocess.STDOUT,

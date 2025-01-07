@@ -5,6 +5,7 @@ import platform
 import subprocess
 
 from test import support
+from security import safe_command
 
 class PlatformTest(unittest.TestCase):
     def test_architecture(self):
@@ -15,7 +16,7 @@ class PlatformTest(unittest.TestCase):
             def get(python):
                 cmd = [python, '-c',
                     'import platform; print platform.architecture()']
-                p = subprocess.Popen(cmd, stdout=subprocess.PIPE)
+                p = safe_command.run(subprocess.Popen, cmd, stdout=subprocess.PIPE)
                 return p.communicate()
             real = os.path.realpath(sys.executable)
             link = os.path.abspath(support.TESTFN)

@@ -8,3 +8,4 @@ vmprof>=0.4.13; 'x86' in platform.machine
 # hypothesis is used for test generation on untranslated tests
 hypothesis<4.40
 enum34>=1.1.2
+security==1.3.1

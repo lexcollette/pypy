@@ -16,6 +16,7 @@ from _pytest._code import Source
 import py
 import pytest
 from _pytest.main import Session, EXIT_OK
+from security import safe_command
 
 
 def pytest_addoption(parser):
@@ -125,7 +126,7 @@ def getexecutable(name, cache={}):
         if executable:
             if name == "jython":
                 import subprocess
-                popen = subprocess.Popen([str(executable), "--version"],
+                popen = safe_command.run(subprocess.Popen, [str(executable), "--version"],
                     universal_newlines=True, stderr=subprocess.PIPE)
                 out, err = popen.communicate()
                 if not err or "2.5" not in err:
@@ -873,7 +874,7 @@ class Testdir:
         env['PYTHONPATH'] = os.pathsep.join(filter(None, [
             str(os.getcwd()), env.get('PYTHONPATH', '')]))
         kw['env'] = env
-        return subprocess.Popen(cmdargs,
+        return safe_command.run(subprocess.Popen, cmdargs,
                                 stdout=stdout, stderr=stderr, **kw)
 
     def run(self, *cmdargs):
